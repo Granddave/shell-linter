@@ -3,7 +3,9 @@
 
 input_paths="$1"
 severity_mode="${2}"
-execution_mode="$3"
+exclude_code="$3"
+execution_mode="$4"
+
 my_dir=$(pwd)
 status_code="0"
 invalid_files=()
@@ -17,6 +19,11 @@ process_input(){
     if [[ "$severity_mode" != "style" && "$severity_mode" != "info" && "$severity_mode" != "warning" && "$severity_mode" != "error" ]]; then
         echo "Warning: unknown severity mode. Defaulting severity mode to style."
         severity_mode="style"
+    fi
+
+    optional_params=""
+    if [[ ! -z "$exclude_code" ]]; then
+        optional_params="--exclude $exclude_code"
     fi
 
     if [ "$input_paths" != "." ]; then
@@ -46,7 +53,7 @@ scan_file(){
         echo "###############################################"
         echo "         Scanning $file"
         echo "###############################################"
-        shellcheck "$file_path" --severity="$severity_mode"
+        shellcheck "$file_path" --severity="$severity_mode" $optional_params
         local exit_code=$?
         if [ $exit_code -eq 0 ] ; then
             printf "%b" "Successfully scanned ${file_path} 🙌\n"

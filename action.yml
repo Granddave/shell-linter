@@ -10,12 +10,17 @@ inputs:
     description: 'Specify minimum severity of errors to consider.'
     required: false
     default: 'style'
+  exclude:
+    description: 'Specify shellcheck issues to exclude during scan.'
+    required: false
+    default: ''
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{ inputs.path }}
     - ${{ inputs.severity }}
+    - ${{ inputs.exclude }}
 branding:
   icon: 'check-circle'
   color: 'green'
